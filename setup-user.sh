@@ -42,13 +42,17 @@ EOF
 
 echo "[COPY /etc]"
 if [[ -d "$ETC_PATH" ]]; then
-    dest="root@$TARGET:/etc"
+    dest="root@$TARGET:/"
     echo "Starting copying $ETC_PATH to $dest"
     if ! command -v rsync >/dev/null 2>&1; then
 	echo "install rsync. scp sucks in copying directory trees"
 	exit 1
     fi
-    rsync -avh --progress "${ETC_PATH%%+(/)}" "$dest"
+    rsync \
+	-avh \
+	--progress \
+	--chown=root:root \
+	"${ETC_PATH%%+(/)}" "$dest"
 else
     echo "etc directory ($ETC_PATH) not found. Skipping"
 fi
@@ -86,6 +90,6 @@ cat "$sshpk.pub"
 # Install user scoped tools
 if ! command -v uv >/dev/null 2>&1; then
    echo "Installing uv"
-   curl https://astral.sh/uv/install.sh | sh
+   curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 EOF
