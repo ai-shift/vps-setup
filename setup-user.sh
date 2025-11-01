@@ -81,10 +81,10 @@ else
    echo "Generating new SSH deployment key"
    yes | ssh-keygen -t ed25519 -f "$sshpk" -N ''
 fi
-cat "$sshpk"
+cat "$sshpk.pub"
 
 # Install user scoped tools
-if [[ ! command -v uv ]]; then
+if ! command -v uv >/dev/null 2>&1; then
    echo "Installing uv"
    curl https://astral.sh/uv/install.sh | sh
 fi
